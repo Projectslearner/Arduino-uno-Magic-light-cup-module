@@ -1,65 +1,59 @@
 /*
-    Project name : Magic light cup module
-    Modified Date: 08-06-2024
+    Project name : Arduino Uno Magic Light Cup Module 
+    Modified Date: 29-06-2024
     Code by : Projectslearner
     Website : https://projectslearner.com/learn/arduino-uno-magic-light-cup-module
 */
 
-// Constants for LED pins and switch pins
-const int ledPinA = 9;
-const int switchPinA = 8;
-const int ledPinB = 6;
-const int switchPinB = 7;
-
-// Variables to store the state of switches and LED brightness
-int switchStateA = 0;
-int switchStateB = 0;
-int brightness = 0;
-
-// Variables for debouncing
-unsigned long lastDebounceTimeA = 0;
-unsigned long lastDebounceTimeB = 0;
-unsigned long debounceDelay = 50; // debounce time in milliseconds
+// Define the pins connected to the RGB LED
+const int redPin = 9;
+const int greenPin = 10;
+const int bluePin = 11;
 
 void setup() {
-  pinMode(ledPinA, OUTPUT);
-  pinMode(ledPinB, OUTPUT);
-  pinMode(switchPinA, INPUT);
-  pinMode(switchPinB, INPUT);
+  // Initialize the RGB LED pins as outputs
+  pinMode(redPin, OUTPUT);
+  pinMode(greenPin, OUTPUT);
+  pinMode(bluePin, OUTPUT);
 
-  // Initialize serial communication for debugging
+  // Initialize serial communication
   Serial.begin(9600);
 }
 
 void loop() {
-  // Read the state of the switches
-  int readingA = digitalRead(switchPinA);
-  int readingB = digitalRead(switchPinB);
+  // Example: Red color
+  setColor(255, 0, 0);
+  delay(1000);  // Stay red for 1 second
+  printColorValues();  // Print RGB values to Serial Monitor
 
-  // Check if switch A is pressed and debounce
-  if (readingA == HIGH && (millis() - lastDebounceTimeA) > debounceDelay) {
-    if (brightness < 255) {
-      brightness++;
-    }
-    lastDebounceTimeA = millis();
-  }
+  // Example: Green color
+  setColor(0, 255, 0);
+  delay(1000);  // Stay green for 1 second
+  printColorValues();  // Print RGB values to Serial Monitor
 
-  // Check if switch B is pressed and debounce
-  if (readingB == HIGH && (millis() - lastDebounceTimeB) > debounceDelay) {
-    if (brightness > 0) {
-      brightness--;
-    }
-    lastDebounceTimeB = millis();
-  }
+  // Example: Blue color
+  setColor(0, 0, 255);
+  delay(1000);  // Stay blue for 1 second
+  printColorValues();  // Print RGB values to Serial Monitor
+}
 
-  // Set the brightness of the LEDs
-  analogWrite(ledPinA, brightness);  // A slow fade out
-  analogWrite(ledPinB, 255 - brightness);  // B slow bright up
+// Function to set RGB color
+void setColor(int redValue, int greenValue, int blueValue) {
+  analogWrite(redPin, redValue);       // Set the intensity of the red LED
+  analogWrite(greenPin, greenValue);   // Set the intensity of the green LED
+  analogWrite(bluePin, blueValue);     // Set the intensity of the blue LED
+}
 
-  // Print the current brightness to the Serial Monitor for debugging
-  Serial.print("Brightness: ");
-  Serial.println(brightness);
-
-  // Delay for a short period to control the fade speed
-  delay(20);
+// Function to print RGB values to Serial Monitor
+void printColorValues() {
+  int redValue = analogRead(redPin);       // Read red LED intensity
+  int greenValue = analogRead(greenPin);   // Read green LED intensity
+  int blueValue = analogRead(bluePin);     // Read blue LED intensity
+  
+  Serial.print("Red: ");
+  Serial.print(redValue);
+  Serial.print(", Green: ");
+  Serial.print(greenValue);
+  Serial.print(", Blue: ");
+  Serial.println(blueValue);
 }
